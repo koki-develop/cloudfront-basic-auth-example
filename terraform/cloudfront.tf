@@ -37,3 +37,15 @@ resource "aws_cloudfront_origin_access_control" "main" {
   signing_behavior                  = "always"
   signing_protocol                  = "sigv4"
 }
+
+resource "aws_cloudfront_function" "basicauth" {
+  name    = "${var.name}-basicauth"
+  runtime = "cloudfront-js-1.0"
+  publish = true
+  code = templatefile(
+    "${path.module}/basicauth.js",
+    {
+      authString = base64encode("${var.basicauth_username}:${var.basicauth_password}")
+    }
+  )
+}
