@@ -11,11 +11,11 @@ resource "aws_s3_bucket_public_access_block" "main" {
   restrict_public_buckets = true
 }
 
-resource "aws_s3_object" "index_html" {
+resource "aws_s3_object" "hello_txt" {
   bucket       = aws_s3_bucket.main.id
-  key          = "index.html"
-  content      = "<h1>Hello, World</h1>"
-  content_type = "text/html"
+  key          = "hello.txt"
+  content      = "Hello, World"
+  content_type = "text/plain"
 }
 
 resource "aws_s3_bucket_policy" "main" {
