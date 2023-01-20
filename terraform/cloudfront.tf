@@ -1,3 +1,11 @@
+data "aws_cloudfront_origin_request_policy" "cors_s3_origin" {
+  name = "Managed-CORS-S3Origin"
+}
+
+data "aws_cloudfront_cache_policy" "caching_disabled" {
+  name = "Managed-CachingDisabled"
+}
+
 resource "aws_cloudfront_distribution" "main" {
   enabled = true
 
@@ -12,16 +20,12 @@ resource "aws_cloudfront_distribution" "main" {
   }
 
   default_cache_behavior {
-    target_origin_id       = aws_s3_bucket.main.id
-    viewer_protocol_policy = "redirect-to-https"
-    cached_methods         = ["GET", "HEAD"]
-    allowed_methods        = ["GET", "HEAD"]
-    forwarded_values {
-      query_string = false
-      cookies {
-        forward = "none"
-      }
-    }
+    target_origin_id         = aws_s3_bucket.main.id
+    viewer_protocol_policy   = "redirect-to-https"
+    cached_methods           = ["GET", "HEAD"]
+    allowed_methods          = ["GET", "HEAD"]
+    origin_request_policy_id = data.aws_cloudfront_origin_request_policy.cors_s3_origin.id
+    cache_policy_id          = data.aws_cloudfront_cache_policy.caching_disabled.id
 
     function_association {
       event_type   = "viewer-request"
